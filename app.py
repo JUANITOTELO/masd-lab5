@@ -137,6 +137,7 @@ def update_eigenproperties(a, b, c, d):
             a, b, c, d = float(a), float(b), float(c), float(d)
             matrix = np.array([[a, b], [c, d]])
             eigenvalues, eigenvectors = np.linalg.eig(matrix)
+            eigenvectors = eigenvectors.T
             out_eigenvectors = dl.DashLatex(r'$$\boldsymbol{\lambda} = \begin{bmatrix} %s \\ %s \end{bmatrix} ~~~~~ \boldsymbol{\lambda} = \begin{bmatrix} %s \\ %s \end{bmatrix}$$' % (np.round(eigenvectors[0][0],4), np.round(eigenvectors[0][1],4), np.round(eigenvectors[1][0],4), np.round(eigenvectors[1][1],4)))
             out_eigenvalues = dl.DashLatex(r'$$\lambda_1 = %s ~~~~~ \lambda_2 = %s$$' % (np.round(eigenvalues[0],4), np.round(eigenvalues[1],4)))
             e_type = 'Saddle'
@@ -188,19 +189,11 @@ def update_graph(a, b, c, d):
 )
 def update_canonical_form(a, b, c, d):
     if a != None and b != None and c != None and d != None:
-        if a != 0 and b != 0 and c != 0 and d != 0:
+        if (a != 0 and b != 0 and c != 0 and d != 0) or (a == 0 or b == 0 or c == 0 or d == 0):
             a, b, c, d = float(a), float(b), float(c), float(d)
             matrix = np.array([[a, b], [c, d]])
             _, eigenvectors = np.linalg.eig(matrix)
-            P = np.array([eigenvectors[0], eigenvectors[1]])
-            P_inv = np.linalg.inv(P)
-            Ac = P_inv * matrix * P
-            out_canonical_form = dl.DashLatex(rf'$$\boldsymbol{{A_c}} = \begin{{bmatrix}} {Ac[0][0]:.4f} & {Ac[0][1]:.4f} \\ {Ac[1][0]:.4f} & {Ac[1][1]:.4f} \end{{bmatrix}}$$')
-            return out_canonical_form
-        elif a == 0 or b == 0 or c == 0 or d == 0:
-            a, b, c, d = float(a), float(b), float(c), float(d)
-            matrix = np.array([[a, b], [c, d]])
-            _, eigenvectors = np.linalg.eig(matrix)
+            eigenvectors = eigenvectors.T
             P = np.array([eigenvectors[0], eigenvectors[1]])
             P_inv = np.linalg.inv(P)
             Ac = P_inv * matrix * P
@@ -218,16 +211,11 @@ def update_canonical_form(a, b, c, d):
 )
 def update_solution(a, b, c, d):
     if a != None and b != None and c != None and d != None:
-        if a != 0 and b != 0 and c != 0 and d != 0:
+        if (a != 0 and b != 0 and c != 0 and d != 0) or (a == 0 or b == 0 or c == 0 or d == 0):
             a, b, c, d = float(a), float(b), float(c), float(d)
             matrix = np.array([[a, b], [c, d]])
             eigenvalues, eigenvectors = np.linalg.eig(matrix)
-            out_solution = dl.DashLatex(fr'$$\boldsymbol{{X}}(t) = c_1 e^{{{eigenvalues[0]:.4f} t}} \begin{{bmatrix}} {eigenvectors[0][0]:.4f} \\ {eigenvectors[0][1]:.4f} \end{{bmatrix}} + c_2 e^{{{eigenvalues[1]:.4f} t}} \begin{{bmatrix}} {eigenvectors[1][0]:.4f} \\ {eigenvectors[1][1]:.4f} \end{{bmatrix}}$$')
-            return out_solution
-        elif a == 0 or b == 0 or c == 0 or d == 0:
-            a, b, c, d = float(a), float(b), float(c), float(d)
-            matrix = np.array([[a, b], [c, d]])
-            eigenvalues, eigenvectors = np.linalg.eigh(matrix)
+            eigenvectors = eigenvectors.T
             out_solution = dl.DashLatex(fr'$$\boldsymbol{{X}}(t) = c_1 e^{{{eigenvalues[0]:.4f} t}} \begin{{bmatrix}} {eigenvectors[0][0]:.4f} \\ {eigenvectors[0][1]:.4f} \end{{bmatrix}} + c_2 e^{{{eigenvalues[1]:.4f} t}} \begin{{bmatrix}} {eigenvectors[1][0]:.4f} \\ {eigenvectors[1][1]:.4f} \end{{bmatrix}}$$')
             return out_solution
     return {}
