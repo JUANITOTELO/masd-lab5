@@ -230,4 +230,4 @@ def update_solution(a, b, c, d):
 
 if __name__ == '__main__':
     # run as production
-    app.run_server(host='0.0.0.0',debug=True, port=8050)
+    app.run_server(host='0.0.0.0',debug=False, port=8050)
