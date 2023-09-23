@@ -1,6 +1,6 @@
 # Dash app that receives a 2 by 2 matrix of numbers and show it in a latex matrix form.
 
-from dash import html, dcc, Output, Input
+from dash import html, dcc, Output, Input, Dash
 import plotly.graph_objects as go
 import dash_latex as dl
 from dash import dcc
