@@ -10,5 +10,8 @@ COPY . /app
 # Install the application dependencies
 RUN pip install -r requirements.txt
 
+# Expose the dash application port
+EXPOSE 8050/tcp
+
 # Define the entry point for the container
 CMD ["python", "app.py"]
