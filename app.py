@@ -194,9 +194,9 @@ def update_canonical_form(a, b, c, d):
             matrix = np.array([[a, b], [c, d]])
             _, eigenvectors = np.linalg.eig(matrix)
             eigenvectors = eigenvectors.T
-            P = np.array([eigenvectors[0], eigenvectors[1]])
+            P = np.array([[eigenvectors[0,0], eigenvectors[1,0]], [eigenvectors[0,1], eigenvectors[1,1]]])
             P_inv = np.linalg.inv(P)
-            Ac = P_inv * matrix * P
+            Ac = np.dot(np.dot(P_inv, matrix), P)
             out_canonical_form = dl.DashLatex(rf'$$\boldsymbol{{A_c}} = \begin{{bmatrix}} {Ac[0][0]:.4f} & {Ac[0][1]:.4f} \\ {Ac[1][0]:.4f} & {Ac[1][1]:.4f} \end{{bmatrix}}$$')
             return out_canonical_form
     return {}
