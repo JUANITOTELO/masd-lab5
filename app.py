@@ -1,9 +1,9 @@
 # Dash app that receives a 2 by 2 matrix of numbers and show it in a latex matrix form.
 
 from dash import html, dcc, Output, Input, Dash
+import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 import dash_latex as dl
-from dash import dcc
 from dash.dependencies import Input, Output
 import numpy as np
 import plotly.figure_factory as ff
@@ -33,52 +33,74 @@ def generate_plot(A, name):
     )
     return fig
 
-app = Dash(__name__)
+app = Dash(__name__, external_stylesheets=[dbc.themes.DARKLY])
 
 server = app.server
 
-app.layout = html.Div([
-    html.H1('2 by 2 matrix properties', style={'textAlign': 'center'}),
-    html.Div([
-        dcc.Graph(id='output-graph', figure={}, style={'margin-top': '20px', 'height': '70vh', 'width': '70vh'}),
-        html.Div([
-            html.H2('Enter the values of the matrix', style={'margin-top': '20px'}),
-            html.Div([
-            
-            html.Table([
-                html.Tr([
-                    html.Td([
-                        dcc.Input(id='a', type='number', value=None, style={'margin-right': '10px', 'border': '1px solid black', 'padding': '5px'})
-                    ]),
-                    html.Td([
-                        dcc.Input(id='b', type='number', value=None, style={'margin-right': '10px', 'border': '1px solid black', 'padding': '5px'})
-                    ])
-                ]),
-                html.Tr([
-                    html.Td([
-                        dcc.Input(id='c', type='number', value=None, style={'margin-right': '10px', 'border': '1px solid black', 'padding': '5px'})
-                    ]),
-                    html.Td([
-                        dcc.Input(id='d', type='number', value=None, style={'margin-right': '10px', 'border': '1px solid black', 'padding': '5px'})
-                    ])
-                ])
-            ])], style={'margin-top': '20px', 'display': 'flex', 'flex-direction': 'column', 'justify-content': 'space-around', 'align-items': 'center', 'width': '50vw'}),
-
-            html.Div(id='output-markdown', style={'margin-top': '20px'}),
-
-            html.Div(id='output-canonical-form', style={'margin-top': '20px'}),
-
-            html.Div(id='output-eigenvector', style={'margin-top': '20px'}),
-
-            html.Div(id='output-eigenvalues', style={'margin-top': '20px'}),
-            
-            html.Div(id='output-type-of-system', style={'margin-top': '20px'}),
-
-            html.Div(id='output-solution', style={'margin-top': '20px'})
-        ])
-        ], style={'margin-top': '20px', 'display': 'flex', 'flex-direction': 'row', 'justify-content': 'space-around', 'align-items': 'center'}
-    )
-])
+app.layout = dbc.Container(
+    [
+        html.H1('2 by 2 matrix properties', style={'textAlign': 'center'}),
+        dbc.Row(
+            [
+                dbc.Col(
+                    html.Div(
+                        [
+                            html.H2('Enter the values of the matrix', style={'margin-top': '20px'}),
+                            dbc.Col(
+                                [
+                                    dbc.Row(
+                                        [
+                                            dbc.Col(
+                                                # input of type number with no arrows
+                                                dbc.Input(id='a', type='number', value=None, style={'textAlign': 'center'}),
+                                                width=5
+                                            ),
+                                            dbc.Col(
+                                                dbc.Input(id='b', type='number', value=None, style={'textAlign': 'center'}),
+                                                width=5
+                                            )
+                                        ],
+                                        style={'margin-top': '20px'}
+                                    ),
+                                    dbc.Row(
+                                        [
+                                            dbc.Col(
+                                                dbc.Input(id='c', type='number', value=None, style={'textAlign': 'center'}),
+                                                width=5
+                                            ),
+                                            dbc.Col(
+                                                dbc.Input(id='d', type='number', value=None, style={'textAlign': 'center'}),
+                                                width=5
+                                            )
+                                        ],
+                                        style={'margin-top': '20px'}
+                                    )
+                                ],
+                                width='auto',
+                                align='center'
+                            ),
+                            html.Div(id='output-markdown', style={'margin-top': '20px'}),
+                            html.Div(id='output-canonical-form', style={'margin-top': '20px'}),
+                            html.Div(id='output-eigenvector', style={'margin-top': '20px'}),
+                            html.Div(id='output-eigenvalues', style={'margin-top': '20px'}),
+                            html.Div(id='output-type-of-system', style={'margin-top': '20px'}),
+                            html.Div(id='output-solution', style={'margin-top': '20px'})
+                        ]
+                    ),
+                    width=5
+                ),
+                dbc.Col(
+                    dcc.Graph(id='output-graph', figure={}, style={'margin-top': '20px', 'height': '70vh', 'width': '70vh'}, config={'displayModeBar': False, 'scrollZoom': False, 'staticPlot': True, 'editable': False, 'responsive': True, 'displaylogo': False}),
+                    width='auto'
+                )
+            ],
+            align='center',
+            style={'margin-top': '20px', 'justify-content': 'space-around'}
+        )
+    ],
+    fluid=True,
+    style={'margin-top': '20px', 'align-items': 'center', 'justify_content': 'center'}
+)
 
 @app.callback(
     Output('output-markdown', 'children'),
@@ -227,4 +249,5 @@ def update_solution(a, b, c, d):
     return {}
 
 if __name__ == '__main__':
+    # run as production
     app.run_server(debug=False)
