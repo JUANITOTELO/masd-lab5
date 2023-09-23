@@ -19,8 +19,8 @@ def generate_plot(A, name):
     # check if image exists
     # if os.pth.isfile(name):
     #     returan
-    X_range = np.linspace(-10,10,40)
-    Y_range = np.linspace(-10,10,40)
+    X_range = np.linspace(-10,10,10)
+    Y_range = np.linspace(-10,10,10)
 
     X, Y = np.meshgrid(X_range, Y_range)
 
@@ -73,11 +73,14 @@ app.layout = dbc.Container(
                                                 width=5
                                             )
                                         ],
+                                        align='center',
+                                        justify='left',
                                         style={'margin-top': '20px'}
                                     )
                                 ],
                                 width='auto',
-                                align='center'
+                                align='center',
+                                style={'margin-top': '20px'}
                             ),
                             html.Div(id='output-markdown', style={'margin-top': '20px'}),
                             html.Div(id='output-canonical-form', style={'margin-top': '20px'}),
@@ -94,7 +97,7 @@ app.layout = dbc.Container(
                     width='auto'
                 )
             ],
-            align='center',
+            align='space-between',
             style={'margin-top': '20px', 'justify-content': 'space-around'}
         )
     ],
@@ -126,35 +129,12 @@ def update_markdown(a, b, c, d):
 )
 def update_eigenproperties(a, b, c, d):
     if a != None and b != None and c != None and d != None:
-        if a != 0 and b != 0 and c != 0 and d != 0:
+        if (a != 0 and b != 0 and c != 0 and d != 0) or (a == 0 or b == 0 or c == 0 or d == 0):
             a, b, c, d = float(a), float(b), float(c), float(d)
             matrix = np.array([[a, b], [c, d]])
             eigenvalues, eigenvectors = np.linalg.eig(matrix)
-            out_eigenvectors = dl.DashLatex(r'$$\boldsymbol{\lambda} = \begin{bmatrix} %s \\ %s \end{bmatrix} ~~~~~ \boldsymbol{\lambda} = \begin{bmatrix} %s \\ %s \end{bmatrix}$$' % (eigenvectors[0][0], eigenvectors[0][1], eigenvectors[1][0], eigenvectors[1][1]))
-            out_eigenvalues = dl.DashLatex(r'$$\lambda_1 = %s ~~~~~ \lambda_2 = %s$$' % (eigenvalues[0], eigenvalues[1]))
-            e_type = 'Saddle'
-            if np.iscomplex(eigenvalues[0]) and np.iscomplex(eigenvalues[1]):
-                e_type = 'Spiral'
-                if eigenvalues[0].real == 0 and eigenvalues[1].real == 0:
-                    e_type = 'Center'
-                elif eigenvalues[0].real < 0 and eigenvalues[1].real < 0:
-                    e_type = 'Sink Spiral'
-                elif eigenvalues[0].real > 0 and eigenvalues[1].real > 0:
-                    e_type = 'Source Spiral'     
-            else:
-                if eigenvalues[0] < 0 and eigenvalues[1] < 0:
-                    e_type = 'Sink'
-                elif eigenvalues[0] > 0 and eigenvalues[1] > 0:
-                    e_type = 'Source'
-            out_type_of_system = dl.DashLatex(r'$$\text{Type of system:  \bf{%s}}$$' % (e_type))
-
-            return out_eigenvectors, out_eigenvalues, out_type_of_system
-        elif a == 0 or b == 0 or c == 0 or d == 0:
-            a, b, c, d = float(a), float(b), float(c), float(d)
-            matrix = np.array([[a, b], [c, d]])
-            eigenvalues, eigenvectors = np.linalg.eig(matrix)
-            out_eigenvectors = dl.DashLatex(r'$$\boldsymbol{\lambda} = \begin{bmatrix} %s \\ %s \end{bmatrix} ~~~~~ \boldsymbol{\lambda} = \begin{bmatrix} %s \\ %s \end{bmatrix}$$' % (eigenvectors[0][0], eigenvectors[0][1], eigenvectors[1][0], eigenvectors[1][1]))
-            out_eigenvalues = dl.DashLatex(r'$$\lambda_1 = %s ~~~~~ \lambda_2 = %s$$' % (eigenvalues[0], eigenvalues[1]))
+            out_eigenvectors = dl.DashLatex(r'$$\boldsymbol{\lambda} = \begin{bmatrix} %s \\ %s \end{bmatrix} ~~~~~ \boldsymbol{\lambda} = \begin{bmatrix} %s \\ %s \end{bmatrix}$$' % (np.round(eigenvectors[0][0],4), np.round(eigenvectors[0][1],4), np.round(eigenvectors[1][0],4), np.round(eigenvectors[1][1],4)))
+            out_eigenvalues = dl.DashLatex(r'$$\lambda_1 = %s ~~~~~ \lambda_2 = %s$$' % (np.round(eigenvalues[0],4), np.round(eigenvalues[1],4)))
             e_type = 'Saddle'
             if np.iscomplex(eigenvalues[0]) and np.iscomplex(eigenvalues[1]):
                 e_type = 'Spiral'
@@ -211,7 +191,7 @@ def update_canonical_form(a, b, c, d):
             P = np.array([eigenvectors[0], eigenvectors[1]])
             P_inv = np.linalg.inv(P)
             Ac = P_inv * matrix * P
-            out_canonical_form = dl.DashLatex(r'$$\boldsymbol{A_c} = \begin{bmatrix} %s & %s \\ %s & %s \end{bmatrix}$$' % (Ac[0][0], Ac[0][1], Ac[1][0], Ac[1][1]))
+            out_canonical_form = dl.DashLatex(rf'$$\boldsymbol{{A_c}} = \begin{{bmatrix}} {Ac[0][0]:.4f} & {Ac[0][1]:.4f} \\ {Ac[1][0]:.4f} & {Ac[1][1]:.4f} \end{{bmatrix}}$$')
             return out_canonical_form
         elif a == 0 or b == 0 or c == 0 or d == 0:
             a, b, c, d = float(a), float(b), float(c), float(d)
@@ -220,7 +200,7 @@ def update_canonical_form(a, b, c, d):
             P = np.array([eigenvectors[0], eigenvectors[1]])
             P_inv = np.linalg.inv(P)
             Ac = P_inv * matrix * P
-            out_canonical_form = dl.DashLatex(r'$$\boldsymbol{A_c} = \begin{bmatrix} %s & %s \\ %s & %s \end{bmatrix}$$' % (Ac[0][0], Ac[0][1], Ac[1][0], Ac[1][1]))
+            out_canonical_form = dl.DashLatex(rf'$$\boldsymbol{{A_c}} = \begin{{bmatrix}} {Ac[0][0]:.4f} & {Ac[0][1]:.4f} \\ {Ac[1][0]:.4f} & {Ac[1][1]:.4f} \end{{bmatrix}}$$')
             return out_canonical_form
     return {}
 
