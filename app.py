@@ -25,7 +25,7 @@ def generate_plot(A, name):
     X, Y = np.meshgrid(X_range, Y_range)
 
     X_slopes, Y_slopes = dX_dt(A[0][0],A[0][1],X,Y), dY_dt(A[1][0],A[1][1],X,Y)
-    fig = go.Figure(ff.create_streamline(X_range, Y_range, X_slopes, Y_slopes, arrow_scale=.5, density=1.7))
+    fig = go.Figure(ff.create_streamline(X_range, Y_range, X_slopes, Y_slopes, arrow_scale=.5, density=1.1))
     fig.update_layout(
         xaxis_title='x',
         yaxis_title='y',
@@ -218,16 +218,16 @@ def update_solution(a, b, c, d):
             a, b, c, d = float(a), float(b), float(c), float(d)
             matrix = np.array([[a, b], [c, d]])
             eigenvalues, eigenvectors = np.linalg.eig(matrix)
-            out_solution = dl.DashLatex(fr'$$\boldsymbol{{X}}(t) = c_1 e^{{{eigenvalues[0]:.4f} t}} \begin{{bmatrix}} {eigenvectors[0][0]:.4f} \\ {eigenvectors[0][1]:.4f} \end{{bmatrix}} + c_2 e^{{{eigenvalues[0]:.4f} t}} \begin{{bmatrix}} {eigenvectors[1][0]:.4f} \\ {eigenvectors[1][1]:.4f} \end{{bmatrix}}$$')
+            out_solution = dl.DashLatex(fr'$$\boldsymbol{{X}}(t) = c_1 e^{{{eigenvalues[0]:.4f} t}} \begin{{bmatrix}} {eigenvectors[0][0]:.4f} \\ {eigenvectors[0][1]:.4f} \end{{bmatrix}} + c_2 e^{{{eigenvalues[1]:.4f} t}} \begin{{bmatrix}} {eigenvectors[1][0]:.4f} \\ {eigenvectors[1][1]:.4f} \end{{bmatrix}}$$')
             return out_solution
         elif a == 0 or b == 0 or c == 0 or d == 0:
             a, b, c, d = float(a), float(b), float(c), float(d)
             matrix = np.array([[a, b], [c, d]])
             eigenvalues, eigenvectors = np.linalg.eig(matrix)
-            out_solution = dl.DashLatex(fr'$$\boldsymbol{{X}}(t) = c_1 e^{{{eigenvalues[0]:.4f} t}} \begin{{bmatrix}} {eigenvectors[0][0]:.4f} \\ {eigenvectors[0][1]:.4f} \end{{bmatrix}} + c_2 e^{{{eigenvalues[0]:.4f} t}} \begin{{bmatrix}} {eigenvectors[1][0]:.4f} \\ {eigenvectors[1][1]:.4f} \end{{bmatrix}}$$')
+            out_solution = dl.DashLatex(fr'$$\boldsymbol{{X}}(t) = c_1 e^{{{eigenvalues[0]:.4f} t}} \begin{{bmatrix}} {eigenvectors[0][0]:.4f} \\ {eigenvectors[0][1]:.4f} \end{{bmatrix}} + c_2 e^{{{eigenvalues[1]:.4f} t}} \begin{{bmatrix}} {eigenvectors[1][0]:.4f} \\ {eigenvectors[1][1]:.4f} \end{{bmatrix}}$$')
             return out_solution
     return {}
 
 if __name__ == '__main__':
     # run as production
-    app.run_server(host='0.0.0.0',debug=False, port=8050)
+    app.run_server(host='0.0.0.0',debug=True, port=8050)
