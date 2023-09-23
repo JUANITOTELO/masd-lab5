@@ -35,6 +35,10 @@ def generate_plot(A, name):
 
 app = Dash(__name__, external_stylesheets=[dbc.themes.DARKLY])
 
+app.title = '2 by 2 matrix properties'
+
+app._favicon = "favicon.ico"
+
 server = app.server
 
 app.layout = dbc.Container(
@@ -114,7 +118,7 @@ app.layout = dbc.Container(
 )
 def update_markdown(a, b, c, d):
     if a != None and b != None and c != None and d != None:
-        if a != 0 and b != 0 and c != 0 and d != 0:
+        if (a != 0 and b != 0 and c != 0 and d != 0) or (a == 0 or b == 0 or c == 0 or d == 0):
             return dl.DashLatex(r'$$\boldsymbol{A} = \begin{bmatrix} %s & %s \\ %s & %s \end{bmatrix}$$' % (a, b, c, d))
 
 
@@ -223,7 +227,7 @@ def update_solution(a, b, c, d):
         elif a == 0 or b == 0 or c == 0 or d == 0:
             a, b, c, d = float(a), float(b), float(c), float(d)
             matrix = np.array([[a, b], [c, d]])
-            eigenvalues, eigenvectors = np.linalg.eig(matrix)
+            eigenvalues, eigenvectors = np.linalg.eigh(matrix)
             out_solution = dl.DashLatex(fr'$$\boldsymbol{{X}}(t) = c_1 e^{{{eigenvalues[0]:.4f} t}} \begin{{bmatrix}} {eigenvectors[0][0]:.4f} \\ {eigenvectors[0][1]:.4f} \end{{bmatrix}} + c_2 e^{{{eigenvalues[1]:.4f} t}} \begin{{bmatrix}} {eigenvectors[1][0]:.4f} \\ {eigenvectors[1][1]:.4f} \end{{bmatrix}}$$')
             return out_solution
     return {}
