@@ -2,7 +2,6 @@
 
 from dash import html, dcc, Output, Input
 import plotly.graph_objects as go
-import dash
 import dash_latex as dl
 from dash import dcc
 from dash.dependencies import Input, Output
@@ -34,7 +33,9 @@ def generate_plot(A, name):
     )
     return fig
 
-app = dash.Dash(__name__)
+app = Dash(__name__)
+
+server = app.server
 
 app.layout = html.Div([
     html.H1('2 by 2 matrix properties', style={'textAlign': 'center'}),
